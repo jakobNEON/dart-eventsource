@@ -1,3 +1,5 @@
+
+
 library eventsource;
 
 export "src/event.dart";
@@ -34,7 +36,7 @@ class EventSource extends Stream<Event> {
   // interface attributes
 
   final Uri url;
-  final Map headers;
+  final Map? headers;
 
   EventSourceReadyState get readyState => _readyState;
 
@@ -51,12 +53,12 @@ class EventSource extends Stream<Event> {
 
   http.Client client;
   Duration _retryDelay = const Duration(milliseconds: 3000);
-  String _lastEventId;
-  EventSourceDecoder _decoder;
+  String? _lastEventId;
+  late EventSourceDecoder _decoder;
 
   /// Create a new EventSource by connecting to the specified url.
   static Future<EventSource> connect(url,
-      {http.Client client, String lastEventId, Map headers}) async {
+      {http.Client? client, String? lastEventId, Map? headers}) async {
     // parameter initialization
     url = url is Uri ? url : Uri.parse(url);
     client = client ?? new http.Client();
@@ -72,8 +74,8 @@ class EventSource extends Stream<Event> {
 
   // proxy the listen call to the controller's listen call
   @override
-  StreamSubscription<Event> listen(void onData(Event event),
-          {Function onError, void onDone(), bool cancelOnError}) =>
+  StreamSubscription<Event> listen(void onData(Event event)?,
+          {Function? onError, void onDone()?, bool? cancelOnError}) =>
       _streamController.stream.listen(onData,
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
 
@@ -83,11 +85,11 @@ class EventSource extends Stream<Event> {
     var request = new http.Request("GET", url);
     request.headers["Cache-Control"] = "no-cache";
     request.headers["Accept"] = "text/event-stream";
-    if (_lastEventId.isNotEmpty) {
-      request.headers["Last-Event-ID"] = _lastEventId;
+    if (_lastEventId!.isNotEmpty) {
+      request.headers["Last-Event-ID"] = _lastEventId!;
     }
     if (headers != null) {
-      headers.forEach((k,v) {
+      headers!.forEach((k,v) {
         request.headers[k] = v;
       }); 
     }
