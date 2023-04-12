@@ -11,7 +11,7 @@ dependencies:
   collection: ">=1.15.0"
   http: "0.13.5"
   http_parser: "4.0.2"
-  logging: "1.1.1"
+  logging: "1.1.0"
   sync: ">=0.3.0"
 
 dev_dependencies:
